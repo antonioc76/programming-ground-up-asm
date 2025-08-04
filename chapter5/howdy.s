@@ -9,6 +9,7 @@
 .equ SYS_EXIT, 1
 .equ O_CREAT_WRONLY_TRUNC, 03101
 .equ DEFAULT_FLAGS, 0666
+.equ MSG_SZ, 12
 filename:
     .string "howdy.txt"
 msg:
@@ -35,6 +36,7 @@ write_to_file:
     movl $SYS_WRITE, %eax
     movl ST_FD_OUT(%ebp), %ebx # retrieve fd
     movl $msg, %ecx
+    movl $MSG_SZ, %edx
     int $0x80
 
 close_file:
