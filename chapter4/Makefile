@@ -1,29 +1,48 @@
-maximum: maximum.o
-	ld -m elf_i386 maximum.o -o maximum
+BUILD_DIR := build
 
-maximum.o: maximum.s
-	as --32 maximum.s -o maximum.o
+all: $(BUILD_DIR)/maximum \
+     $(BUILD_DIR)/use_outside_square \
+     $(BUILD_DIR)/square \
+     $(BUILD_DIR)/factorial \
+     $(BUILD_DIR)/power
 
-use_outside_square: use_outside_square.o square.o
-	ld -m elf_i386 use_outside_square.o square.o -o use_outside_square
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-use_outside_square.o: use_outside_square.s square.s
-	as --32 use_outside_square.s -o use_outside_square.o
+# maximum
+$(BUILD_DIR)/maximum.o: maximum.s | $(BUILD_DIR)
+	as --32 maximum.s -o $(BUILD_DIR)/maximum.o
 
-square: square.o
-	ld -m elf_i386 square.o -o square
+$(BUILD_DIR)/maximum: $(BUILD_DIR)/maximum.o
+	ld -m elf_i386 $(BUILD_DIR)/maximum.o -o $(BUILD_DIR)/maximum
 
-square.o: square.s
-	as --32 square.s -o square.o
+# square
+$(BUILD_DIR)/square.o: square.s | $(BUILD_DIR)
+	as --32 square.s -o $(BUILD_DIR)/square.o
 
-factorial: factorial.o
-	ld -m elf_i386 factorial.o -o factorial
+$(BUILD_DIR)/square: $(BUILD_DIR)/square.o
+	ld -m elf_i386 $(BUILD_DIR)/square.o -o $(BUILD_DIR)/square
 
-factorial.o: factorial.s
-	as --32 factorial.s -o factorial.o
+# use_outside_square
+$(BUILD_DIR)/use_outside_square.o: use_outside_square.s square.s | $(BUILD_DIR)
+	as --32 use_outside_square.s -o $(BUILD_DIR)/use_outside_square.o
 
-power: power.o
-	ld -m elf_i386 power.o -o power
+$(BUILD_DIR)/use_outside_square: $(BUILD_DIR)/use_outside_square.o $(BUILD_DIR)/square.o
+	ld -m elf_i386 $(BUILD_DIR)/use_outside_square.o $(BUILD_DIR)/square.o -o $(BUILD_DIR)/use_outside_square
 
-power.o: power.s
-	as --32 power.s -o power.o
+# factorial
+$(BUILD_DIR)/factorial.o: factorial.s | $(BUILD_DIR)
+	as --32 factorial.s -o $(BUILD_DIR)/factorial.o
+
+$(BUILD_DIR)/factorial: $(BUILD_DIR)/factorial.o
+	ld -m elf_i386 $(BUILD_DIR)/factorial.o -o $(BUILD_DIR)/factorial
+
+# power
+$(BUILD_DIR)/power.o: power.s | $(BUILD_DIR)
+	as --32 power.s -o $(BUILD_DIR)/power.o
+
+$(BUILD_DIR)/power: $(BUILD_DIR)/power.o
+	ld -m elf_i386 $(BUILD_DIR)/power.o -o $(BUILD_DIR)/power
+
+clean:
+	rm -rf $(BUILD_DIR)

@@ -1,35 +1,39 @@
-maximum: maximum.o
-	ld maximum.o -o maximum
+BUILD_DIR := build
 
-maximum.o: maximum.s
-	as maximum.s -o maximum.o
+all: $(BUILD_DIR)/maximum $(BUILD_DIR)/minimum $(BUILD_DIR)/max_sa $(BUILD_DIR)/exit
 
-minimum: minimum.o
-	ld minimum.o -o minimum
+# Ensure build directory exists
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-minimum.o: minimum.s
-	as minimum.s -o minimum.o
+# maximum
+$(BUILD_DIR)/maximum.o: maximum.s | $(BUILD_DIR)
+	as maximum.s -o $(BUILD_DIR)/maximum.o
 
-max_sa: max_sa.o
-	ld max_sa.o -o max_sa
+$(BUILD_DIR)/maximum: $(BUILD_DIR)/maximum.o
+	ld $(BUILD_DIR)/maximum.o -o $(BUILD_DIR)/maximum
 
-max_sa.o: max_sa.s
-	as max_sa.s -o max_sa.o
+# minimum
+$(BUILD_DIR)/minimum.o: minimum.s | $(BUILD_DIR)
+	as minimum.s -o $(BUILD_DIR)/minimum.o
 
-exit: exit.o
-	ld exit.o -o exit
+$(BUILD_DIR)/minimum: $(BUILD_DIR)/minimum.o
+	ld $(BUILD_DIR)/minimum.o -o $(BUILD_DIR)/minimum
 
-exit.o: exit.s
-	as exit.s -o exit.o
+# max_sa
+$(BUILD_DIR)/max_sa.o: max_sa.s | $(BUILD_DIR)
+	as max_sa.s -o $(BUILD_DIR)/max_sa.o
 
-test: test1
-	echo "test0"
+$(BUILD_DIR)/max_sa: $(BUILD_DIR)/max_sa.o
+	ld $(BUILD_DIR)/max_sa.o -o $(BUILD_DIR)/max_sa
 
-test1: test2
-	echo "test1"
+# exit
+$(BUILD_DIR)/exit.o: exit.s | $(BUILD_DIR)
+	as exit.s -o $(BUILD_DIR)/exit.o
 
-test2:
-	echo "test2"
+$(BUILD_DIR)/exit: $(BUILD_DIR)/exit.o
+	ld $(BUILD_DIR)/exit.o -o $(BUILD_DIR)/exit
 
+# Clean rule
 clean:
-	rm -rf maximum.o maximum
+	rm -rf $(BUILD_DIR)

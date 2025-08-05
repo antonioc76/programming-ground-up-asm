@@ -1,29 +1,48 @@
-howdy: howdy.o
-	ld -m elf_i386 howdy.o -o howdy
+BUILD_DIR := build
 
-howdy.o: howdy.s
-	as --32 howdy.s -o howdy.o
+all: $(BUILD_DIR)/howdy \
+     $(BUILD_DIR)/toupperastd \
+     $(BUILD_DIR)/toupperstd \
+     $(BUILD_DIR)/toupper \
+     $(BUILD_DIR)/test_comments
 
-toupperastd: toupperastd.o
-	ld -m elf_i386 toupperastd.o -o toupperastd
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-toupperastd.o: toupperastd.s
-	as --32 toupperastd.s -o toupperastd.o
+# howdy
+$(BUILD_DIR)/howdy.o: howdy.s | $(BUILD_DIR)
+	as --32 howdy.s -o $(BUILD_DIR)/howdy.o
 
-toupperstd: toupperstd.o
-	ld -m elf_i386 toupperstd.o -o toupperstd
+$(BUILD_DIR)/howdy: $(BUILD_DIR)/howdy.o
+	ld -m elf_i386 $(BUILD_DIR)/howdy.o -o $(BUILD_DIR)/howdy
 
-toupperstd.o: toupperstd.s
-	as --32 toupperstd.s -o toupperstd.o
+# toupperastd
+$(BUILD_DIR)/toupperastd.o: toupperastd.s | $(BUILD_DIR)
+	as --32 toupperastd.s -o $(BUILD_DIR)/toupperastd.o
 
-toupper: toupper.o
-	ld -m elf_i386 toupper.o -o toupper
+$(BUILD_DIR)/toupperastd: $(BUILD_DIR)/toupperastd.o
+	ld -m elf_i386 $(BUILD_DIR)/toupperastd.o -o $(BUILD_DIR)/toupperastd
 
-toupper.o: toupper.s
-	as --32 toupper.s -o toupper.o
+# toupperstd
+$(BUILD_DIR)/toupperstd.o: toupperstd.s | $(BUILD_DIR)
+	as --32 toupperstd.s -o $(BUILD_DIR)/toupperstd.o
 
-test_comments: test_comments.o
-	ld -m elf_i386 test_comments.o -o test_comments
+$(BUILD_DIR)/toupperstd: $(BUILD_DIR)/toupperstd.o
+	ld -m elf_i386 $(BUILD_DIR)/toupperstd.o -o $(BUILD_DIR)/toupperstd
 
-test_comments.o: test_comments.s
-	as --32 test_comments.s -o test_comments.o
+# toupper
+$(BUILD_DIR)/toupper.o: toupper.s | $(BUILD_DIR)
+	as --32 toupper.s -o $(BUILD_DIR)/toupper.o
+
+$(BUILD_DIR)/toupper: $(BUILD_DIR)/toupper.o
+	ld -m elf_i386 $(BUILD_DIR)/toupper.o -o $(BUILD_DIR)/toupper
+
+# test_comments
+$(BUILD_DIR)/test_comments.o: test_comments.s | $(BUILD_DIR)
+	as --32 test_comments.s -o $(BUILD_DIR)/test_comments.o
+
+$(BUILD_DIR)/test_comments: $(BUILD_DIR)/test_comments.o
+	ld -m elf_i386 $(BUILD_DIR)/test_comments.o -o $(BUILD_DIR)/test_comments
+
+clean:
+	rm -rf $(BUILD_DIR)
